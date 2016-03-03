@@ -384,6 +384,7 @@ var Select = _react2['default'].createClass({
 		simpleValue: _react2['default'].PropTypes.bool, // pass the value to onChange as a simple value (legacy pre 1.0 mode), defaults to false
 		style: _react2['default'].PropTypes.object, // optional style to apply to the control
 		tabIndex: _react2['default'].PropTypes.string, // optional tab index of the control
+		tabSelectsValue: _react2['default'].PropTypes.bool, // whether to treat tabbing out while focused to be value selection
 		value: _react2['default'].PropTypes.any, // initial field value
 		valueComponent: _react2['default'].PropTypes.func, // value component to render
 		valueKey: _react2['default'].PropTypes.string, // path of the label value in option objects
@@ -422,6 +423,7 @@ var Select = _react2['default'].createClass({
 			scrollMenuIntoView: true,
 			searchable: true,
 			simpleValue: false,
+			tabSelectsValue: true,
 			valueComponent: _Value2['default'],
 			valueKey: 'value'
 		};
@@ -646,7 +648,7 @@ var Select = _react2['default'].createClass({
 				return;
 			case 9:
 				// tab
-				if (event.shiftKey || !this.state.isOpen) {
+				if (event.shiftKey || !this.state.isOpen || !this.props.tabSelectsValue) {
 					return;
 				}
 				this.selectFocusedOption();
@@ -1058,10 +1060,14 @@ var Select = _react2['default'].createClass({
 		var _this5 = this;
 
 		if (!this.props.name) return;
-		var value = valueArray.map(function (i) {
-			return stringifyValue(i[_this5.props.valueKey]);
-		}).join(this.props.delimiter);
-		return _react2['default'].createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: value, disabled: this.props.disabled });
+		return valueArray.map(function (item, index) {
+			return _react2['default'].createElement('input', { key: 'hidden.' + index,
+				type: 'hidden',
+				ref: 'value' + index,
+				name: _this5.props.name,
+				value: stringifyValue(item[_this5.props.valueKey]),
+				disabled: _this5.props.disabled });
+		});
 	},
 
 	getFocusableOption: function getFocusableOption(selectedOption) {

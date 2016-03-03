@@ -964,8 +964,7 @@ module.exports = React.createClass({
       size: 50,
       rating: 'g',
       https: false,
-      "default": "retro",
-      className: ""
+      "default": "retro"
     };
   },
   render: function() {
