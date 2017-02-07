@@ -177,9 +177,13 @@ const Select = React.createClass({
 	componentDidUpdate (prevProps, prevState) {
 		// focus to the selected option
 		if (this.refs.menu && this.refs.focused && this.state.isOpen && !this.hasScrolledToOption) {
-			let focusedOptionNode = ReactDOM.findDOMNode(this.refs.focused);
-			let menuNode = ReactDOM.findDOMNode(this.refs.menu);
-			menuNode.scrollTop = focusedOptionNode.offsetTop;
+			const focusedOptionNode = ReactDOM.findDOMNode(this.refs.focused);
+			const focusedOptionRect = focusedOptionNode.getBoundingClientRect();
+			const menuNode = ReactDOM.findDOMNode(this.refs.menu);
+			const menuNodeRect = menuNode.getBoundingClientRect();
+
+			menuNode.scrollTop = Math.min(menuNode.scrollTop, menuNode.scrollTop - menuNodeRect.top + focusedOptionRect.top);
+			menuNode.scrollTop = Math.max(menuNode.scrollTop, menuNode.scrollTop - menuNodeRect.bottom + focusedOptionRect.bottom);
 			this.hasScrolledToOption = true;
 		} else if (!this.state.isOpen) {
 			this.hasScrolledToOption = false;
