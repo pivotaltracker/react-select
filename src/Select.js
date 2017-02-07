@@ -113,9 +113,13 @@ class Select extends React.Component {
 	componentDidUpdate (prevProps, prevState) {
 		// focus to the selected option
 		if (this.menu && this.focused && this.state.isOpen && !this.hasScrolledToOption) {
-			let focusedOptionNode = ReactDOM.findDOMNode(this.focused);
-			let menuNode = ReactDOM.findDOMNode(this.menu);
-			menuNode.scrollTop = focusedOptionNode.offsetTop;
+			const focusedOptionNode = ReactDOM.findDOMNode(this.focused);
+			const focusedOptionRect = focusedOptionNode.getBoundingClientRect();
+			const menuNode = ReactDOM.findDOMNode(this.menu);
+			const menuNodeRect = menuNode.getBoundingClientRect();
+
+			menuNode.scrollTop = Math.min(menuNode.scrollTop, menuNode.scrollTop - menuNodeRect.top + focusedOptionRect.top);
+			menuNode.scrollTop = Math.max(menuNode.scrollTop, menuNode.scrollTop - menuNodeRect.bottom + focusedOptionRect.bottom);
 			this.hasScrolledToOption = true;
 		} else if (!this.state.isOpen) {
 			this.hasScrolledToOption = false;
